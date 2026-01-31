@@ -3,27 +3,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { 
   MessageSquare, 
-  Calendar, 
-  Bot, 
-  Zap, 
-  Users, 
   Database, 
   BarChart3, 
-  ChevronRight, 
   CheckCircle2, 
-  ArrowUpRight, 
-  Globe, 
-  Menu, 
-  X,
-  Smartphone,
-  Check,
-  Send,
-  Clock,
-  ShieldCheck,
+  Zap, 
+  Mail, 
+  RefreshCw, 
+  ShieldCheck, 
   LayoutGrid,
-  Mail,
-  RefreshCw,
-  Download
+  ArrowRight
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GoogleGenAI } from "@google/genai";
@@ -32,135 +20,105 @@ import { GoogleGenAI } from "@google/genai";
 const translations = {
   ar: {
     dir: 'rtl',
-    nav: ['ماذا نقدم', 'احجز مكالمة'],
-    heroTitle: 'حوّل عملك إلى نظام ذكي يعمل بدلاً عنك',
-    heroSub: 'نصمم حلول أتمتة وذكاء اصطناعي تساعدك على تنظيم عملك، توفير الوقت، وتحويل الفوضى إلى نظام قابل للنمو.',
-    primaryCTA: 'احجز مكالمة مجانية (15 دقيقة)',
-    secondaryCTA: 'محادثة عاجلة على واتساب',
-    servicesTitle: 'ماذا نقدم',
+    nav: ['الأدوات المجانية', 'احصل على الحل'],
+    heroTitle: 'بوابتك لأتمتة الأعمال الذكية مجاناً',
+    heroSub: 'نحن لا نقدم وعوداً تسويقية. نحن نبني مستقبل الأتمتة. احصل على أدوات تقنية متقدمة لتنظيم عملك وتوفير وقتك عبر حلولنا البرمجية المتكاملة.',
+    primaryCTA: 'ابدأ الحل المجاني',
+    secondaryCTA: 'محادثة تقنية عاجلة',
+    servicesTitle: 'ماذا نوفر لك',
     services: [
-      { title: 'أتمتة الردود والرسائل', desc: 'استجابة فورية لعملائك على مدار الساعة.' },
-      { title: 'تنظيم الحجوزات والمواعيد', desc: 'نظام آلي يضمن عدم تضارب المواعيد.' },
-      { title: 'إدارة العملاء المحتملين (Leads)', desc: 'تتبع كل فرصة بيع من البداية للنهاية.' },
-      { title: 'ربط الأدوات الرقمية', desc: 'دمج واتساب، إيميل، وجوجل في نظام واحد.' },
-      { title: 'تقارير ذكية لمتابعة الأداء', desc: 'بيانات واضحة لاتخاذ قرارات أفضل.' },
-      { title: 'حلول مخصصة حسب طبيعة عملك', desc: 'نظام مصمم خصيصاً لخدمة أهدافك.' }
+      { title: 'أتمتة ذكية للمراسلات', desc: 'أنظمة رد فورية متطورة تعمل على مدار الساعة لخدمة عملائك.' },
+      { title: 'البنية التحتية الرقمية', desc: 'تنظيم شامل لبياناتك ومواعيدك في واجهة تقنية موحدة.' },
+      { title: 'تحليل البيانات المتقدم', desc: 'تقارير دقيقة تعتمد على الأرقام لتوجيه نمو أعمالك بذكاء.' }
     ],
-    problemsTitle: 'المشاكل التي نحلها',
-    problems: [
-      'لا يوجد لديك عملاء ثابتين',
-      'تضيع وقتك في أعمال متكررة',
-      'لا تعرف أين يذهب العملاء المحتملون',
-      'صعوبة المتابعة والتنظيم',
-      'تريد زيادة الدخل لكن بدون ضغط إضافي',
-      'العمل يعتمد عليك بشكل كامل'
-    ],
-    calendlyTitle: 'استشارة استكشافية مجانية (15 دقيقة)',
-    calendlySub: 'هذه مكالمة قصيرة لفهم طبيعة عملك والتحديات الحالية، وتحديد ما إذا كانت الأتمتة مناسبة لك، بدون أي التزام.',
-    footer: '© ٢٠٢٤ AuraFlow Systems. وكالة أتمتة ذكاء اصطناعي.'
+    formTitle: 'انضم إلى منصة الأتمتة المستقبلية',
+    formLabelName: 'الاسم الكامل',
+    formLabelEmail: 'البريد الإلكتروني',
+    formLabelSource: 'كيف وجدت أدواتنا؟',
+    formSubmit: 'تفعيل الحل المجاني',
+    formSuccess: 'شكراً لثقتك! ستصلك أدواتنا المجانية عبر بريدك الإلكتروني قريباً.',
+    formSpam: 'No spam. Just a useful free solution.',
+    footer: '© 2024 Auraflow Systems. منصة أتمتة الأعمال الذكية.'
   },
   en: {
     dir: 'ltr',
-    nav: ['Services', 'Book Now'],
-    heroTitle: 'Turn your business into a smart system that works for you',
-    heroSub: 'We design AI automation solutions that help you organize your work, save time, and transform chaos into a scalable system.',
-    primaryCTA: 'Book a Free Call (15 min)',
-    secondaryCTA: 'Urgent WhatsApp Chat',
-    servicesTitle: 'What We Provide',
+    nav: ['Free Tools', 'Get Solution'],
+    heroTitle: 'Your Gateway to Professional AI Automation',
+    heroSub: 'Skip the marketing hype. We are building the foundation of automated business growth. Access high-end technical tools designed to save time and scale efficiently.',
+    primaryCTA: 'Get Free Solution',
+    secondaryCTA: 'Urgent Tech Chat',
+    servicesTitle: 'Our Solutions',
     services: [
-      { title: 'Message & Reply Automation', desc: 'Instant response to your customers 24/7.' },
-      { title: 'Booking Management', desc: 'Automated system to prevent scheduling conflicts.' },
-      { title: 'Lead Management', desc: 'Track every sales opportunity from start to finish.' },
-      { title: 'Tool Integration', desc: 'Integrate WhatsApp, Email, and Google into one system.' },
-      { title: 'Smart Performance Reports', desc: 'Clear data for better decision making.' },
-      { title: 'Custom Solutions', desc: 'A system designed specifically for your goals.' }
+      { title: 'Smart Messaging', desc: 'High-performance instant response systems working 24/7.' },
+      { title: 'Digital Infrastructure', desc: 'Comprehensive organization of leads and tasks in one interface.' },
+      { title: 'Data Intelligence', desc: 'Technical reports showing exactly where your systems thrive.' }
     ],
-    problemsTitle: 'Problems We Solve',
-    problems: [
-      'Lack of consistent clients',
-      'Wasted time on repetitive tasks',
-      'Unknown lead drop-off points',
-      'Difficulty in follow-up and organization',
-      'Wanting more income without extra pressure',
-      'Business relies entirely on you'
-    ],
-    calendlyTitle: 'Free Discovery Call (15 min)',
-    calendlySub: 'This is a short call to understand your business and challenges, determining if automation fits your needs. No obligation.',
-    footer: '© 2024 AuraFlow Systems. AI Automation Agency.'
+    formTitle: 'Join the Future Automation Platform',
+    formLabelName: 'Full Name',
+    formLabelEmail: 'Email Address',
+    formLabelSource: 'Where did you find us?',
+    formSubmit: 'Activate Free Solution',
+    formSuccess: 'Thank you! You will receive your automated solution via email shortly.',
+    formSpam: 'No spam. Just a useful free solution.',
+    footer: '© 2024 Auraflow Systems. Smart Business Automation Platform.'
   },
   tr: {
     dir: 'ltr',
-    nav: ['Hizmetler', 'Randevu Al'],
-    heroTitle: 'İşletmenizi sizin yerinize çalışan akıllı bir sisteme dönüştürün',
-    heroSub: 'İşinizi organize etmenize, zaman kazanmanıza ve karmaşayı ölçeklenebilir bir sisteme dönüştürmenize yardımcı olan AI otomasyon çözümleri tasارلىyoruz.',
-    primaryCTA: 'Ücretsiz Randevu Al (15 dk)',
-    secondaryCTA: 'Acil WhatsApp Hattı',
-    servicesTitle: 'Neler Sunuyoruz',
+    nav: ['Ücretsiz Araçlar', 'Çözümü Al'],
+    heroTitle: 'Profesyonel Yapay Zeka Otomasyonu Kapınız',
+    heroSub: 'Pazarlama vaatlerini bir kenara bırakın. Otomatik iş büyümesinin temelini atıyoruz. Zaman kazanmak için tasarlanmış üst düzey teknik araçlara erişin.',
+    primaryCTA: 'Ücretsiz Çözümü Al',
+    secondaryCTA: 'Acil Teknik Görüşme',
+    servicesTitle: 'Çözümlerimiz',
     services: [
-      { title: 'Mesaj ve Yanıt Otomasyonu', desc: 'Müşterilerinize 7/24 anında yanıt verin.' },
-      { title: 'Randevu Yönetimi', desc: 'Çakışmaları önleyen otomatik sistem.' },
-      { title: 'Potansiyel Müşteri Yönetimi', desc: 'Satış fırsatlarını baştan sona takip edin.' },
-      { title: 'Araç Entegrasyonu', desc: 'WhatsApp, E-posta ve Google\'ı tek bir sistemده birleştirin.' },
-      { title: 'Akıllı Performans Raporları', desc: 'Daha iyi kararlar için net veriler.' },
-      { title: 'Özel Çözümler', desc: 'Hedeflerinize özel tasarlanmış sistemler.' }
+      { title: 'Akıllı Mesajlaşma', desc: '7/24 çalışan yüksek performanslı anında yanıt sistemleri.' },
+      { title: 'Dijital Altyapı', desc: 'Potansiyel müşterilerin ve görevlerin tek bir arayüzde kapsamlı organizasyonu.' },
+      { title: 'Veri Zekası', desc: 'Sistemlerinizin tam olarak nerede geliştiğini gösteren teknik raporlar.' }
     ],
-    problemsTitle: 'Çözdüğümüz Sorunلار',
-    problems: [
-      'Düzenli müşteri eksikliği',
-      'Tekrارlayan görevlerde zaman kaybı',
-      'Potansiyel müşterilerin nerede kaybolduğunu bilmemek',
-      'Takip ve organizasyon zorluğu',
-      'Ek baskı olmadan geliri artırma isteği',
-      'İşin tamamen size bağlı olması'
-    ],
-    calendlyTitle: 'Ücretsiz Keşif Görüşmesi (15 dk)',
-    calendlySub: 'İşinizi ve zorlukلارınızı anlamak için kısa bir görüşme. Otomasyonun size uygun olup olmadığını belirleriz. Taahhüt yok.',
-    footer: '© 2024 AuraFlow Systems. AI Otomasyon Ajansı.'
+    formTitle: 'Geleceğin Otomasyon Platformuna Katılın',
+    formLabelName: 'Tam İsim',
+    formLabelEmail: 'E-posta Adresi',
+    formLabelSource: 'Bizi nereden buldunuz?',
+    formSubmit: 'Ücretsiz Çözümü Etkinleştir',
+    formSuccess: 'Teşekkürler! Otomatik çözümünüz yakında e-posta yoluyla size ulaşacaktır.',
+    formSpam: 'No spam. Just a useful free solution.',
+    footer: '© 2024 Auraflow Systems. Akıllı İş Otomasyon Platformu.'
   }
 };
 
+const WEBHOOK_URL = 'https://WEBHOOK_URL_HERE';
+
 type LangCode = 'ar' | 'en' | 'tr';
 
-/**
- * Recreated Icon from user's image
- */
 const AuraFlowIcon = ({ className = "" }: { className?: string }) => (
   <svg viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <defs>
-      <linearGradient id="auraGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-        <stop offset="0%" stopColor="#22d3ee" /> {/* Cyan */}
-        <stop offset="50%" stopColor="#0891b2" /> {/* Teal */}
-        <stop offset="100%" stopColor="#8b5cf6" /> {/* Purple */}
+      <linearGradient id="auraGradientRed" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#ef4444" />
+        <stop offset="50%" stopColor="#991b1b" />
+        <stop offset="100%" stopColor="#450a0a" />
       </linearGradient>
     </defs>
-    
-    {/* Top circle and stem */}
-    <circle cx="50" cy="15" r="7" fill="url(#auraGradient)" />
-    <path d="M50 22V35" stroke="url(#auraGradient)" strokeWidth="4" strokeLinecap="round" />
-    
-    {/* Body Workflow Shape */}
+    <circle cx="50" cy="15" r="7" fill="url(#auraGradientRed)" />
+    <path d="M50 22 V35" stroke="url(#auraGradientRed)" strokeWidth="4" strokeLinecap="round" />
     <path 
-      d="M38 35H62C67 35 70 38 70 43V52C70 57 67 60 62 60H52L50 67L48 60H38C33 60 30 57 30 52V43C30 38 33 35 38 35Z" 
-      stroke="url(#auraGradient)" 
+      d="M38 35 H62 C67 35 70 38 70 43 V52 C70 57 67 60 62 60 H52 L50 67 L48 60 H38 C33 60 30 57 30 52 V43 C30 38 33 35 38 35 Z" 
+      stroke="url(#auraGradientRed)" 
       strokeWidth="4" 
       strokeLinejoin="round" 
     />
-    
-    {/* Side Nodes */}
-    <circle cx="28" cy="47" r="4.5" fill="white" stroke="url(#auraGradient)" strokeWidth="3" />
-    <circle cx="72" cy="47" r="4.5" fill="white" stroke="url(#auraGradient)" strokeWidth="3" />
-    
-    {/* Infinity Symbol at bottom */}
+    <circle cx="28" cy="47" r="4.5" fill="black" stroke="url(#auraGradientRed)" strokeWidth="3" />
+    <circle cx="72" cy="47" r="4.5" fill="black" stroke="url(#auraGradientRed)" strokeWidth="3" />
     <path 
-      d="M38 85C38 85 30 85 30 77.5C30 70 50 85 50 77.5C50 70 70 85 70 77.5C70 70 62 70 62 70" 
-      stroke="#8b5cf6" 
+      d="M38 85 C38 85 30 85 30 77.5 C30 70 50 85 50 77.5 C50 70 70 85 70 77.5 C70 70 62 70 62 70" 
+      stroke="#ef4444" 
       strokeWidth="5" 
       strokeLinecap="round"
       opacity="0.9"
     />
     <path 
-      d="M38 85C38 92.5 45 92.5 50 85C55 77.5 62 77.5 62 70" 
-      stroke="#8b5cf6" 
+      d="M38 85 C38 92.5 45 92.5 50 85 C55 77.5 62 77.5 62 70" 
+      stroke="#ef4444" 
       strokeWidth="5" 
       strokeLinecap="round"
     />
@@ -170,63 +128,163 @@ const AuraFlowIcon = ({ className = "" }: { className?: string }) => (
 const AuraFlowLogo = ({ className = "" }: { className?: string }) => (
   <div className={`flex items-center gap-3 px-2 py-1 group ${className}`}>
     <div className="relative h-10 sm:h-12 w-10 sm:w-12 flex-shrink-0 flex items-center justify-center transition-all duration-300">
-      <AuraFlowIcon className="relative h-full w-full drop-shadow-md group-hover:scale-105 transition-transform" />
+      <AuraFlowIcon className="relative h-full w-full drop-shadow-[0_0_15px_rgba(239,68,68,0.4)] group-hover:scale-105 transition-transform" />
     </div>
-    <div className="flex flex-col justify-center border-l border-white/10 pl-3 rtl:border-l-0 rtl:border-r rtl:pl-0 rtl:pr-3">
+    <div className="flex flex-col justify-center border-l border-white/5 pl-3 rtl:border-l-0 rtl:border-r rtl:pl-0 rtl:pr-3">
       <span className="text-xl sm:text-2xl font-bold tracking-tight text-white leading-none">
         Auraflow
       </span>
-      <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-black text-slate-500 leading-none mt-1">
+      <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.3em] font-black text-red-600/80 leading-none mt-1">
         SYSTEMS
       </span>
     </div>
   </div>
 );
 
-const GlassCard: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = "" }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true }}
-    className={`bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 shadow-2xl relative overflow-hidden group ${className}`}
-  >
-    <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-transparent to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-    <div className="relative z-10">{children}</div>
-  </motion.div>
-);
+const LeadForm = ({ lang, t }: { lang: LangCode, t: any }) => {
+  const [formData, setFormData] = useState({ name: '', email: '', source: '' });
+  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
-const LanguageSwitcher = ({ current, set }: { current: LangCode, set: (l: LangCode) => void }) => (
-  <div className="flex items-center bg-white/5 border border-white/10 rounded-full p-1">
-    {(['ar', 'en', 'tr'] as LangCode[]).map((l) => (
-      <button
-        key={l}
-        onClick={() => set(l)}
-        className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase transition-all ${current === l ? 'bg-indigo-600 text-white' : 'text-slate-400 hover:text-white'}`}
-      >
-        {l}
-      </button>
-    ))}
-  </div>
-);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('submitting');
+    try {
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        source: formData.source
+      };
+      
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      setStatus('success');
+    } catch (err) {
+      console.error(err);
+      setStatus('error');
+    }
+  };
+
+  if (status === 'success') {
+    return (
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="text-center p-12 bg-zinc-900 border border-red-500/20 rounded-[32px] backdrop-blur-xl">
+        <CheckCircle2 size={64} className="text-red-500 mx-auto mb-6" />
+        <h3 className="text-2xl font-black text-white mb-2">{t.formSuccess}</h3>
+      </motion.div>
+    );
+  }
+
+  return (
+    <div className="bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[32px] p-8 md:p-12 shadow-2xl relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/10 blur-[60px] rounded-full" />
+      <h3 className="text-2xl md:text-3xl font-black text-white mb-8 text-center">{t.formTitle}</h3>
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">{t.formLabelName}</label>
+          <input 
+            required
+            type="text"
+            autoComplete="off"
+            autoCapitalize="words"
+            value={formData.name}
+            onChange={e => setFormData({ ...formData, name: e.target.value })}
+            className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder:text-slate-700 focus:outline-none focus:border-red-500/50 transition-all"
+            placeholder="your name"
+          />
+        </div>
+        
+        <div>
+          <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">{t.formLabelEmail}</label>
+          <input 
+            required
+            type="email"
+            autoComplete="email"
+            inputMode="email"
+            autoCapitalize="none"
+            spellCheck="false"
+            value={formData.email}
+            onChange={e => setFormData({ ...formData, email: e.target.value })}
+            className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder:text-slate-700 focus:outline-none focus:border-red-500/50 transition-all"
+            placeholder="example@gmail.com"
+          />
+        </div>
+
+        <div>
+          <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">{t.formLabelSource}</label>
+          <div className="relative">
+            <select 
+              required
+              value={formData.source}
+              onChange={e => setFormData({ ...formData, source: e.target.value })}
+              className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-4 text-white focus:outline-none focus:border-red-500/50 appearance-none transition-all cursor-pointer"
+            >
+              <option value="" disabled className="bg-slate-900">Select an option</option>
+              <option value="Instagram" className="bg-slate-900">Instagram</option>
+              <option value="YouTube" className="bg-slate-900">YouTube</option>
+              <option value="WhatsApp" className="bg-slate-900">WhatsApp</option>
+              <option value="Other" className="bg-slate-900">Other</option>
+            </select>
+            <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none text-slate-500">
+               <Zap size={14} />
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4 pt-4 text-center">
+          <button 
+            disabled={status === 'submitting'}
+            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-red-800 text-white font-black py-5 rounded-2xl shadow-xl shadow-red-600/20 transition-all flex items-center justify-center gap-3 group active:scale-[0.98]"
+          >
+            {status === 'submitting' ? <RefreshCw className="animate-spin" size={20} /> : <Zap size={20} className="group-hover:animate-pulse" />}
+            {t.formSubmit}
+          </button>
+          
+          <p className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.1em]">
+            No spam. Just a useful free solution.
+          </p>
+        </div>
+      </form>
+    </div>
+  );
+};
+
+const LanguageSwitcher = ({ current, set }: { current: LangCode, set: (l: LangCode) => void }) => {
+  return (
+    <div className="flex gap-2 bg-white/5 p-1 rounded-full border border-white/10">
+      {(['ar', 'en', 'tr'] as LangCode[]).map((l) => (
+        <button
+          key={l}
+          onClick={() => set(l)}
+          className={`px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${
+            current === l 
+              ? 'bg-red-600 text-white shadow-lg shadow-red-600/20' 
+              : 'text-slate-500 hover:text-white hover:bg-white/5'
+          }`}
+        >
+          {l}
+        </button>
+      ))}
+    </div>
+  );
+};
 
 const App = () => {
   const [lang, setLang] = useState<LangCode>('ar');
   const [scrolled, setScrolled] = useState(false);
-  const [heroImage, setHeroImage] = useState<string | null>(localStorage.getItem('aura_hero_image'));
+  const [heroImage, setHeroImage] = useState<string | null>(localStorage.getItem('aura_hero_image_red_v3'));
   const [isGenerating, setIsGenerating] = useState(false);
   const t = translations[lang];
-  const calendlyRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.documentElement.dir = t.dir;
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
-    
-    // Auto generate image if missing
-    if (!heroImage) {
-      generateHeroImage();
-    }
-
+    if (!heroImage) generateHeroImage();
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lang]);
 
@@ -234,171 +292,92 @@ const App = () => {
     setIsGenerating(true);
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-      const prompt = "A premium, futuristic AI neural brain core, glowing with cyan and purple energy, connected by light-trails to floating glass UI panels like CRM and Analytics. Dark navy background, SaaS aesthetic, high resolution, professional technology agency style. No faces, no robots, just intelligent network energy.";
-      
+      const prompt = "A premium, futuristic AI neural brain core in DEEP RED and DARK BLACK aesthetic. Glowing red energy trails, connected to floating minimal glass UI panels. High contrast, technical, SaaS aesthetic, clean minimal style. Dark environment with dramatic red lighting.";
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash-image',
         contents: { parts: [{ text: prompt }] },
         config: { imageConfig: { aspectRatio: "1:1" } }
       });
-
       for (const part of response.candidates[0].content.parts) {
         if (part.inlineData) {
           const imageUrl = `data:image/png;base64,${part.inlineData.data}`;
           setHeroImage(imageUrl);
-          localStorage.setItem('aura_hero_image', imageUrl);
+          localStorage.setItem('aura_hero_image_red_v3', imageUrl);
           break;
         }
       }
     } catch (error) {
-      console.error("Failed to generate hero image:", error);
-      // Fallback
-      setHeroImage("https://images.unsplash.com/photo-1675557009875-436f2976375d?auto=format&fit=crop&q=80&w=1200");
+      setHeroImage("https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200");
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const scrollToCalendly = () => {
-    calendlyRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const navIds = ['services', 'booking'];
+  const scrollToForm = () => formRef.current?.scrollIntoView({ behavior: 'smooth' });
 
   return (
-    <div className="bg-slate-950 text-slate-200 selection:bg-indigo-500/30 font-sans min-h-screen">
-      {/* Navbar */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-slate-950/80 backdrop-blur-xl border-b border-white/10 py-2 shadow-2xl' : 'bg-transparent py-5'}`}>
+    <div className="bg-black text-slate-200 selection:bg-red-500/30 font-sans min-h-screen">
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-black/80 backdrop-blur-xl border-b border-white/5 py-2 shadow-2xl' : 'bg-transparent py-5'}`}>
         <div className="container mx-auto px-6 flex justify-between items-center">
           <AuraFlowLogo />
-          
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-10">
             {t.nav.map((item, i) => (
-              <a 
-                key={i} 
-                href={`#${navIds[i]}`} 
-                className="text-sm font-medium text-slate-400 hover:text-indigo-400 transition-colors"
-                onClick={(e) => {
-                  if (navIds[i] === 'booking') {
-                    e.preventDefault();
-                    scrollToCalendly();
-                  }
-                }}
-              >
+              <a key={i} href="#" onClick={(e) => { e.preventDefault(); scrollToForm(); }} className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-red-500 transition-colors">
                 {item}
               </a>
             ))}
           </div>
-
           <div className="flex items-center gap-4">
-            <button 
-              onClick={scrollToCalendly}
-              className="hidden sm:block px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-black rounded-full transition-all shadow-lg"
-            >
-              {lang === 'ar' ? 'احجز مكالمة' : 'Book Call'}
+            <button onClick={scrollToForm} className="hidden sm:block px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white text-[10px] font-black uppercase tracking-widest rounded-full transition-all shadow-lg shadow-red-600/20">
+              {t.primaryCTA}
             </button>
             <LanguageSwitcher current={lang} set={setLang} />
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <header id="hero" className="relative min-h-screen flex items-center pt-24 overflow-hidden">
+      <header className="relative min-h-screen flex items-center pt-24 overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-indigo-600/20 blur-[150px] rounded-full" />
-          <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-cyan-600/10 blur-[150px] rounded-full" />
-          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
+          <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-red-600/10 blur-[150px] rounded-full" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-red-900/5 blur-[150px] rounded-full" />
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20 pointer-events-none" />
         </div>
 
-        <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center relative z-10">
-          {/* Image Container on LEFT */}
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1 }}
-            className={`relative ${t.dir === 'rtl' ? 'order-2 lg:order-1' : 'order-1'}`}
-          >
-            <div className="relative rounded-[40px] overflow-hidden border border-white/20 shadow-3xl group bg-slate-900/50 min-h-[400px] flex items-center justify-center">
+        <div className="container mx-auto px-6 grid lg:grid-cols-2 gap-20 items-center relative z-10">
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className={t.dir === 'rtl' ? 'order-2 lg:order-1' : 'order-1'}>
+            <div className="relative rounded-[48px] overflow-hidden border border-white/10 shadow-[0_0_80px_rgba(239,68,68,0.15)] group bg-zinc-950 min-h-[400px] flex items-center justify-center">
               {heroImage ? (
-                <img 
-                  src={heroImage} 
-                  alt="AI Neural Brain" 
-                  className={`rounded-[30px] w-full aspect-square object-cover transition-opacity duration-1000 ${isGenerating ? 'opacity-30' : 'opacity-100'}`}
-                />
+                <img src={heroImage} alt="AI Core" className={`w-full aspect-square object-cover transition-all duration-1000 group-hover:scale-105 ${isGenerating ? 'opacity-30' : 'opacity-100'}`} />
               ) : (
-                <div className="flex flex-col items-center gap-4 text-slate-600">
-                  <RefreshCw className="w-12 h-12 animate-spin" />
-                  <span className="text-xs font-bold uppercase tracking-widest">Generating AI Core...</span>
-                </div>
+                <RefreshCw className="animate-spin text-red-500" />
               )}
-
-              {/* Regenerate Action */}
-              <button 
-                onClick={generateHeroImage}
-                disabled={isGenerating}
-                className="absolute bottom-4 right-4 p-3 bg-slate-950/80 backdrop-blur-md border border-white/10 rounded-xl text-indigo-400 hover:text-white transition-all opacity-0 group-hover:opacity-100 disabled:opacity-50"
-              >
-                {isGenerating ? <RefreshCw className="animate-spin" size={20} /> : <RefreshCw size={20} />}
-              </button>
-
-              {/* Floating UI Elements */}
-              <motion.div 
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 5, repeat: Infinity }}
-                className="absolute top-8 left-8 p-3 bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-xl shadow-2xl z-20 hidden md:block"
-              >
-                <div className="flex items-center gap-2">
-                  <BarChart3 size={14} className="text-cyan-400" />
-                  <div className="h-2 w-16 bg-white/20 rounded-full" />
-                </div>
-              </motion.div>
-
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-cyan-600/20 rounded-full blur-[100px] animate-pulse pointer-events-none" />
-            </div>
-
-            {/* AI Status Badge */}
-            <motion.div 
-              animate={{ opacity: [1, 0.4, 1] }}
-              transition={{ duration: 3, repeat: Infinity }}
-              className="absolute -top-6 -right-6 p-4 bg-slate-900/90 border border-indigo-500/30 rounded-2xl shadow-2xl z-30"
-            >
-              <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-cyan-500 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.8)]"></div>
-                <div className="text-[11px] font-black text-white uppercase tracking-tighter">AI AGENT ACTIVE</div>
+              <div className="absolute top-8 left-8 p-3 bg-black/60 backdrop-blur-xl border border-white/10 rounded-xl hidden md:block">
+                <div className="flex items-center gap-2"><BarChart3 size={14} className="text-red-500" /><div className="h-1 w-12 bg-white/10 rounded-full" /></div>
               </div>
-            </motion.div>
+              <div className="absolute bottom-6 right-6 px-4 py-2 bg-black/80 backdrop-blur-md border border-red-500/20 rounded-full">
+                <span className="text-[10px] font-black uppercase tracking-widest text-red-500 animate-pulse">Platform Ready</span>
+              </div>
+            </div>
           </motion.div>
 
-          {/* Text Content on RIGHT */}
-          <motion.div 
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className={`${t.dir === 'rtl' ? 'order-1 lg:order-2' : 'order-2'}`}
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-indigo-400 text-[10px] font-bold tracking-widest uppercase mb-6">
-              <Bot size={14} className="animate-bounce" />
-              AI Automation Agency
+          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }} className={t.dir === 'rtl' ? 'order-1 lg:order-2' : 'order-2'}>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/5 border border-red-500/10 text-red-500 text-[10px] font-black tracking-widest uppercase mb-8">
+              <ShieldCheck size={14} /> Professional Infrastructure
             </div>
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-6">
-              {t.heroTitle}
+            <h1 className="text-5xl md:text-7xl font-black text-white leading-[1.1] mb-8 tracking-tighter">
+              {t.heroTitle.split(' ').map((word, i) => {
+                const isSpecial = word.includes('أتمتة') || word.toLowerCase().includes('automation');
+                return <span key={i} className={isSpecial ? 'text-red-600' : ''}>{word}{' '}</span>;
+              })}
             </h1>
-            <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-xl leading-relaxed">
+            <p className="text-xl text-slate-400 mb-12 max-w-xl leading-relaxed font-medium">
               {t.heroSub}
             </p>
-            <div className="flex flex-wrap gap-4">
-              <button 
-                onClick={scrollToCalendly}
-                className="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-2xl shadow-2xl shadow-indigo-600/30 transition-all flex items-center gap-3 active:scale-95"
-              >
-                <Calendar size={20} />
-                {t.primaryCTA}
+            <div className="flex flex-wrap gap-5">
+              <button onClick={scrollToForm} className="px-10 py-5 bg-red-600 hover:bg-red-700 text-white font-black rounded-2xl shadow-2xl shadow-red-600/20 transition-all flex items-center gap-3 active:scale-95">
+                {t.primaryCTA} <ArrowRight size={20} />
               </button>
-              <button 
-                onClick={() => window.open('https://wa.me/905546700650', '_blank')}
-                className="px-8 py-4 bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold rounded-2xl transition-all flex items-center gap-3"
-              >
-                <MessageSquare size={20} className="text-[#25D366]" />
+              <button onClick={() => window.open('https://wa.me/905546700650', '_blank')} className="px-10 py-5 bg-white/[0.03] border border-white/10 hover:bg-white/10 text-white font-bold rounded-2xl transition-all">
                 {t.secondaryCTA}
               </button>
             </div>
@@ -406,116 +385,55 @@ const App = () => {
         </div>
       </header>
 
-      {/* Services Section */}
-      <section id="services" className="py-24 bg-slate-950">
+      <section className="py-32 bg-black relative">
         <div className="container mx-auto px-6">
-          <div className="max-w-3xl mb-16">
-            <h2 className="text-4xl md:text-5xl font-black text-white mb-6">{t.servicesTitle}</h2>
-            <div className="h-1.5 w-24 bg-indigo-600 rounded-full"></div>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
             {t.services.map((service, idx) => (
-              <GlassCard key={idx}>
-                <div className="w-12 h-12 rounded-xl bg-indigo-600/10 flex items-center justify-center mb-6 text-indigo-400 border border-indigo-600/20">
-                  {idx === 0 && <MessageSquare size={24} />}
-                  {idx === 1 && <Calendar size={24} />}
-                  {idx === 2 && <Users size={24} />}
-                  {idx === 3 && <Zap size={24} />}
-                  {idx === 4 && <BarChart3 size={24} />}
-                  {idx === 5 && <LayoutGrid size={24} />}
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3">{service.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{service.desc}</p>
-              </GlassCard>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Problems Section */}
-      <section className="py-24 bg-slate-900/40">
-        <div className="container mx-auto px-6">
-          <h2 className="text-4xl font-black text-white text-center mb-16">{t.problemsTitle}</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {t.problems.map((problem, idx) => (
               <motion.div 
                 key={idx}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="flex items-center gap-4 p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-indigo-500/30 transition-all group"
+                className="bg-white/[0.02] border border-white/5 p-10 rounded-[32px] hover:border-red-500/30 transition-all group"
               >
-                <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 group-hover:bg-red-500 group-hover:text-white transition-all">
-                  <X size={16} />
+                <div className="w-14 h-14 rounded-2xl bg-red-600/10 flex items-center justify-center mb-8 text-red-500 group-hover:scale-110 transition-transform">
+                  {idx === 0 && <MessageSquare size={28} />}
+                  {idx === 1 && <Database size={28} />}
+                  {idx === 2 && <Zap size={28} />}
                 </div>
-                <span className="text-slate-300 font-medium">{problem}</span>
+                <h3 className="text-2xl font-black text-white mb-4">{service.title}</h3>
+                <p className="text-slate-500 leading-relaxed font-medium">{service.desc}</p>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Booking Section */}
-      <section ref={calendlyRef} id="booking" className="py-24 bg-slate-900/50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-black text-white mb-4">{t.calendlyTitle}</h2>
-            <p className="text-slate-400 max-w-2xl mx-auto mb-10">{t.calendlySub}</p>
-            <button 
-              onClick={() => window.open('https://wa.me/905546700650', '_blank')}
-              className="px-8 py-4 bg-[#25D366] text-white font-black rounded-2xl flex items-center gap-2 hover:scale-105 transition-all shadow-xl shadow-green-500/10"
-            >
-              <MessageSquare fill="white" size={20} /> {lang === 'ar' ? 'تحدث معنا على واتساب' : 'Chat on WhatsApp'}
-            </button>
-          </div>
-          <GlassCard className="max-w-5xl mx-auto h-[700px] p-0 overflow-hidden shadow-indigo-500/10 border-indigo-500/20">
-            <iframe 
-              src="https://calendly.com/omarforjob10/new-meeting?hide_event_type_details=1&hide_gdpr_banner=1" 
-              width="100%" 
-              height="100%" 
-              frameBorder="0"
-              title="Calendly Booking"
-              className="bg-white"
-            ></iframe>
-          </GlassCard>
+      <section ref={formRef} className="py-32 bg-zinc-950 relative overflow-hidden">
+        <div className="absolute inset-0 bg-red-600/[0.02] pointer-events-none" />
+        <div className="container mx-auto px-6 max-w-4xl relative z-10">
+          <LeadForm lang={lang} t={t} />
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-16 bg-slate-950 border-t border-white/5 text-center">
-        <div className="container mx-auto px-6">
-          <AuraFlowLogo className="justify-center mb-10" />
-          <div className="flex flex-col items-center gap-6">
-            <p className="text-sm text-slate-500 font-medium">{t.footer}</p>
-            <div className="flex gap-4">
-              <button 
-                onClick={() => window.open('https://wa.me/905546700650', '_blank')}
-                className="p-4 bg-[#25D366] rounded-full text-white hover:scale-110 transition-all shadow-lg"
-              >
-                <MessageSquare fill="white" size={24} />
-              </button>
-              <a href="mailto:auraflow-systems@auraflow-systems.online" className="p-4 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 text-white transition-all">
-                <Mail size={24} />
-              </a>
-            </div>
+      <footer className="py-20 border-t border-white/5">
+        <div className="container mx-auto px-6 flex flex-col items-center gap-12">
+          <AuraFlowLogo />
+          <p className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-600">{t.footer}</p>
+          <div className="flex gap-6">
+            <button onClick={() => window.open('https://wa.me/905546700650', '_blank')} className="w-12 h-12 flex items-center justify-center bg-white/[0.03] rounded-full hover:bg-white/10 transition-all border border-white/10">
+              <MessageSquare size={20} className="text-red-500" />
+            </button>
+            <a href="mailto:auraflow-systems@auraflow-systems.online" className="w-12 h-12 flex items-center justify-center bg-white/[0.03] rounded-full hover:bg-white/10 transition-all border border-white/10">
+              <Mail size={20} className="text-red-500" />
+            </a>
           </div>
         </div>
       </footer>
 
-      {/* Mobile Sticky CTA */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] p-4 bg-slate-950/90 backdrop-blur-xl border-t border-white/10 flex gap-3">
-        <button 
-           onClick={() => window.open('https://wa.me/905546700650', '_blank')}
-           className="flex-1 py-4 bg-[#25D366] text-white font-black rounded-2xl flex items-center justify-center gap-2 text-sm shadow-lg shadow-green-500/10"
-        >
-          <MessageSquare size={20} fill="white" /> WhatsApp
-        </button>
-        <button 
-           onClick={scrollToCalendly}
-           className="flex-1 py-4 bg-indigo-600 text-white font-black rounded-2xl flex items-center justify-center gap-2 text-sm shadow-lg shadow-indigo-500/10"
-        >
-          <Calendar size={20} /> {lang === 'ar' ? 'احجز مكالمة' : 'Book Call'}
-        </button>
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[60] p-4 bg-black/90 backdrop-blur-xl border-t border-white/10 flex gap-3">
+        <button onClick={() => window.open('https://wa.me/905546700650', '_blank')} className="flex-1 py-4 bg-white/5 border border-white/10 text-white font-black rounded-2xl text-sm">WhatsApp</button>
+        <button onClick={scrollToForm} className="flex-1 py-4 bg-red-600 text-white font-black rounded-2xl text-sm">{t.primaryCTA}</button>
       </div>
     </div>
   );
