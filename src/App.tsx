@@ -14,6 +14,121 @@ import {
 import { translations, Language } from './constants';
 import { cn } from './lib/utils';
 
+const CountdownTimer = () => {
+    const [timeLeft, setTimeLeft] = useState({ days: 7, hours: 0, minutes: 0, seconds: 0 });
+
+    useEffect(() => {
+      const timer = setInterval(() => {
+        setTimeLeft(prev => {
+          if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
+          if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+          if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
+          if (prev.days > 0) return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 };
+          return prev;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }, []);
+
+    return (
+      <div className="flex gap-4 justify-center mt-6">
+        {[
+          { label: 'Days', value: timeLeft.days },
+          { label: 'Hours', value: timeLeft.hours },
+          { label: 'Min', value: timeLeft.minutes },
+          { label: 'Sec', value: timeLeft.seconds }
+        ].map((item, i) => (
+          <div key={i} className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center font-black text-primary mb-1">
+              {String(item.value).padStart(2, '0')}
+            </div>
+            <span className="text-[8px] font-black uppercase text-white/30 tracking-widest">{item.label}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+interface PricingCardProps {
+  plan: any;
+  index: number;
+  onContact: (planName: string) => void;
+}
+
+const PricingCard: React.FC<PricingCardProps & { lang: Language }> = ({ plan, index, onContact, lang }) => {
+  const intensityStyles = [
+    "hover:border-white/20 hover:bg-white/[0.03]", // Starter: simple
+    "hover:border-primary/40 hover:bg-primary/[0.04] ring-1 ring-primary/20", // Growth: vibrant
+    "hover:border-primary/60 hover:bg-primary/[0.08] shadow-[0_0_50px_-12px_rgba(255,92,0,0.3)]", // Pro: glow
+    "hover:border-white/80 hover:bg-white/[0.05] shadow-[0_0_80px_-12px_rgba(255,255,255,0.2)] border-2 border-white/10" // Custom: bold/eye-catching
+  ];
+
+  const t = translations[lang];
+  const tryPrice = plan.isCustom ? null : Math.round(plan.priceUSD * (t.services.exchangeRate || 45));
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay: index * 0.1 }}
+      className={cn(
+        "relative p-8 rounded-[2.5rem] border border-white/5 bg-white/[0.02] flex flex-col transition-all duration-500",
+        intensityStyles[index % 4],
+        plan.isPopular && "md:scale-105 z-10"
+      )}
+    >
+      {plan.isPopular && (
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-black px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest whitespace-nowrap">
+          Most Popular
+        </div>
+      )}
+      <div className="mb-6">
+        <h3 className="text-xl font-black uppercase mb-1 tracking-tight">{plan.name}</h3>
+        {!plan.isCustom && plan.originalPrice && (
+           <span className="text-[10px] font-bold text-red-500/80 line-through mb-1 block">
+             {plan.originalPrice}
+           </span>
+        )}
+        <div className="flex flex-col">
+          <div className="flex items-baseline gap-1">
+            <span className="text-4xl font-black text-white">{plan.isCustom ? 'Custom' : `$${plan.priceUSD}`}</span>
+            {!plan.isCustom && <span className="text-white/20 font-bold text-xs uppercase">/ project</span>}
+          </div>
+          {!plan.isCustom && tryPrice && (
+            <span className="text-white/30 font-bold text-[11px] mt-1 flex items-center gap-1">
+              ≈ ₺{tryPrice.toLocaleString()} <span className="opacity-50">(TRY)</span>
+            </span>
+          )}
+        </div>
+      </div>
+
+      <p className="text-[13px] text-white/40 font-medium mb-8 leading-relaxed">
+        {plan.description}
+      </p>
+
+      <div className="space-y-4 mb-10 flex-grow">
+        {plan.features?.map((feature: string, fidx: number) => (
+          <div key={fidx} className="flex items-start gap-3 text-[11px] font-medium text-white/60">
+            <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1 shrink-0" />
+            {feature}
+          </div>
+        ))}
+      </div>
+
+      <button 
+        onClick={() => onContact(plan.name)}
+        className={cn(
+          "w-full py-4 rounded-2xl font-black uppercase text-[10px] tracking-widest transition-all shadow-lg",
+          index === 1 ? "bg-primary text-black hover:scale-[1.02] active:scale-95" : "bg-white/5 text-white hover:bg-white/10"
+        )}
+      >
+        {plan.cta}
+      </button>
+    </motion.div>
+  );
+};
+
 export default function App() {
   const [lang, setLang] = useState<Language>('en');
   const t = translations[lang];
@@ -74,6 +189,8 @@ export default function App() {
     );
   };
 
+
+
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white/90 selection:bg-primary/30 antialiased font-sans overflow-x-hidden" dir={t.dir}>
       
@@ -102,10 +219,10 @@ export default function App() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6">
+      <main className="max-w-6xl mx-auto px-6">
         
         {/* HERO SECTION */}
-        <section className="min-h-screen flex flex-col justify-center items-center text-center py-20">
+        <section className="min-h-screen flex flex-col justify-center items-center text-center py-20 max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -146,7 +263,7 @@ export default function App() {
         </section>
 
         {/* ABOUT SECTION */}
-        <section id="about" className="py-24">
+        <section id="about" className="py-24 max-w-4xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative group">
               <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/5 bg-neutral-900 shadow-2xl">
@@ -175,36 +292,91 @@ export default function App() {
         </section>
 
         {/* SERVICES SECTION */}
-        <section id="services" className="py-24 border-t border-white/5">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter uppercase mb-4">{t.services.title}</h2>
-            <p className="text-white/30 font-bold uppercase tracking-widest text-[10px]">{t.services.subtitle}</p>
+        <section id="services" className="py-32 border-t border-white/5 relative">
+          <div className="text-center mb-24">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              className="inline-block px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full text-primary text-[10px] font-black uppercase tracking-widest mb-8"
+            >
+              {t.services.subtitle}
+            </motion.div>
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter uppercase mb-6 leading-none">{t.services.title}</h2>
+            
+            <div className="mt-12 p-8 md:p-12 rounded-[3rem] bg-gradient-to-br from-primary/20 to-transparent border border-primary/20 max-w-3xl mx-auto relative overflow-hidden group">
+              <div className="absolute top-4 right-8 transform rotate-12">
+                <div className="bg-primary text-black px-4 py-1 text-[10px] font-black uppercase tracking-widest rounded-lg shadow-xl animate-pulse">
+                  {t.services.offer.discount}
+                </div>
+              </div>
+
+              <h3 className="text-2xl font-black uppercase mb-8 tracking-tight flex items-center justify-center gap-3">
+                <Cpu className="w-6 h-6 text-primary" />
+                {t.services.offer.title}
+              </h3>
+              
+              <div className="grid sm:grid-cols-2 gap-x-12 gap-y-4 mb-10 text-left max-w-2xl mx-auto">
+                {t.services.offer.features.map((feature: string, idx: number) => (
+                  <div key={idx} className="flex items-center gap-3 text-xs font-bold text-white/50 group-hover:text-white/80 transition-colors">
+                    <ArrowRight className="w-3 h-3 text-primary shrink-0" />
+                    {feature}
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col items-center">
+                <button 
+                  onClick={() => handleWhatsApp('Free Trial')}
+                  className="bg-primary text-black px-12 py-5 rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-accent transition-all hover:scale-105 active:scale-95 shadow-2xl"
+                >
+                  {t.services.offer.cta}
+                </button>
+                <CountdownTimer />
+              </div>
+            </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            {t.services.plans.map((plan, i) => (
-              <div key={i} className="p-8 rounded-[2rem] border border-white/5 bg-white/[0.02] hover:border-primary/30 transition-all flex flex-col items-center text-center">
-                <h3 className="text-lg font-black uppercase mb-2">{plan.name}</h3>
-                <div className="text-3xl font-black text-white mb-6">{plan.price}</div>
-                <p className="text-sm text-white/40 font-medium mb-8 flex-grow">
-                  {plan.description}
-                </p>
-                <button 
-                  onClick={() => handleWhatsApp(plan.name)}
-                  className={cn(
-                    "w-full py-4 rounded-xl font-black uppercase text-[10px] tracking-widest transition-all",
-                    i === 1 ? "bg-primary text-black" : "bg-white/5 text-white hover:bg-primary hover:text-black"
-                  )}
-                >
-                  {plan.cta}
-                </button>
-              </div>
+            <div className="grid lg:grid-cols-4 gap-6 mb-24">
+            {t.services.plans.map((plan: any, index: number) => (
+              <PricingCard key={index} plan={plan} index={index} lang={lang} onContact={(name) => handleWhatsApp(name)} />
             ))}
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-12 max-w-5xl mx-auto border-t border-white/5 pt-16">
+             <div className="p-8 rounded-[2rem] bg-white/[0.02] border border-white/5">
+                <h4 className="text-sm font-black uppercase tracking-widest text-primary mb-6 flex items-center gap-2">
+                   <ChevronDown className="w-4 h-4 rotate-180" />
+                   {t.services.contract.title}
+                </h4>
+                <div className="space-y-4">
+                   {t.services.contract.points.map((pt: string, i: number) => (
+                     <div key={i} className="flex items-center gap-3 text-[11px] font-bold text-white/40">
+                        <ArrowRight className="w-3 h-3 text-primary/50" />
+                        {pt}
+                     </div>
+                   ))}
+                </div>
+             </div>
+
+             <div className="p-8 rounded-[2rem] bg-white/[0.02] border border-white/5">
+                <h4 className="text-sm font-black uppercase tracking-widest text-primary mb-6 flex items-center gap-2">
+                   <Phone className="w-4 h-4" />
+                   {t.services.payment.title}
+                </h4>
+                <div className="space-y-4">
+                   {t.services.payment.points.map((pt: string, i: number) => (
+                     <div key={i} className="flex items-center gap-3 text-[11px] font-bold text-white/40">
+                        <ArrowRight className="w-3 h-3 text-primary/50" />
+                        {pt}
+                     </div>
+                   ))}
+                </div>
+             </div>
           </div>
         </section>
 
         {/* CONTACT SECTION */}
-        <section id="contact" className="py-24 border-t border-white/5">
+        <section id="contact" className="py-24 border-t border-white/5 max-w-4xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase mb-4">{t.contact.title}</h2>
             <p className="text-white/20 font-bold uppercase tracking-[0.4em] text-[10px]">Digital Footprint</p>
@@ -257,7 +429,7 @@ export default function App() {
           </div>
         </section>
 
-        <footer className="py-12 text-center">
+        <footer className="py-12 text-center max-w-4xl mx-auto">
           <p className="text-[10px] font-bold text-white/10 uppercase tracking-[0.4em]">
             © 2026 AuraFlow Systems • Omar Alhamad
           </p>
