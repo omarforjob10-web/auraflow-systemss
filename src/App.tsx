@@ -151,11 +151,11 @@ export default function App() {
             <div className="relative group">
               <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/5 bg-neutral-900 shadow-2xl">
                 <img 
-                  src="https://github.com/omarforjob10-web/auraflow-systemss/blob/main/my-photo.png.jpeg?raw=true" 
+                  src="https://raw.githubusercontent.com/omarforjob10-web/auraflow-systemss/ed4473add2ed1a3407bdba4faefe9c05da002acc/my-photo.jpeg" 
                   alt={t.name}
                   className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 bg-black"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = "my-photo.png.jpeg";
+                    (e.target as HTMLImageElement).src = "https://raw.githubusercontent.com/omarforjob10-web/auraflow-systemss/ed4473add2ed1a3407bdba4faefe9c05da002acc/my-photo.jpeg";
                   }}
                 />
               </div>
