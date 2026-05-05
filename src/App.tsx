@@ -151,11 +151,11 @@ export default function App() {
             <div className="relative group">
               <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden border border-white/5 bg-neutral-900 shadow-2xl">
                 <img 
-                  src="/regenerated_image_1777583248058.png" 
+                  src="https://github.com/omarforjob10-web/auraflow-systemss/blob/main/my-photo.png.jpeg?raw=true" 
                   alt={t.name}
                   className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 bg-black"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src = "";
+                    (e.target as HTMLImageElement).src = "my-photo.png.jpeg";
                   }}
                 />
               </div>
@@ -165,7 +165,7 @@ export default function App() {
               <h2 className="text-xs font-black uppercase tracking-[0.4em] text-primary mb-4">{t.about.title}</h2>
               <h3 className="text-4xl font-black mb-6 uppercase tracking-tight">{t.name}</h3>
               <p className="text-lg text-white/40 leading-relaxed font-medium mb-8">
-                {t.about.description}
+                 {t.about.description}
               </p>
               <div className="flex gap-4">
                  <div className="px-4 py-2 bg-white/5 rounded-lg border border-white/10 text-[10px] font-black uppercase tracking-widest">{t.role}</div>
