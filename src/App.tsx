@@ -6,7 +6,10 @@ import {
   Linkedin, 
   Phone,
   ArrowRight,
-  ChevronDown
+  ChevronDown,
+  X,
+  MessageCircle,
+  ExternalLink
 } from 'lucide-react';
 import { translations, Language } from './constants';
 import { cn } from './lib/utils';
@@ -24,6 +27,51 @@ export default function App() {
       ? `Hello, I'm interested in the ${planName} plan.`
       : "Hello, I'd like to discuss an AI system integration.";
     window.open(`https://wa.me/905546700650?text=${encodeURIComponent(text)}`, '_blank');
+  };
+
+  const SocialCard = ({ icon: Icon, name, href, colorClass, hoverBg, brandColor }: { icon: any, name: string, href: string, colorClass?: string, hoverBg: string, brandColor: string }) => {
+    const [isHovered, setIsHovered] = useState(false);
+    
+    return (
+      <motion.div
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="relative group flex flex-col items-center"
+      >
+        <AnimatePresence>
+          {isHovered && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.9 }}
+              className="absolute -top-12 px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 rounded-lg text-[10px] font-black uppercase tracking-widest text-white z-50 pointer-events-none whitespace-nowrap"
+            >
+              {name}
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
+        <motion.a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          whileHover={{ 
+            scale: 1.15, 
+            rotate: [0, -5, 5, 0],
+            boxShadow: `0 0 40px ${brandColor}`
+          }}
+          whileTap={{ scale: 0.9 }}
+          className={cn(
+            "w-20 h-20 rounded-3xl flex items-center justify-center transition-all duration-500",
+            "bg-white/[0.03] border border-white/5 backdrop-blur-sm",
+            "hover:border-white/30",
+            hoverBg
+          )}
+        >
+          <Icon className={cn("w-7 h-7 transition-all duration-500", colorClass)} />
+        </motion.a>
+      </motion.div>
+    );
   };
 
   return (
@@ -156,33 +204,56 @@ export default function App() {
         </section>
 
         {/* CONTACT SECTION */}
-        <section id="contact" className="py-24">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter uppercase mb-4">{t.contact.title}</h2>
+        <section id="contact" className="py-24 border-t border-white/5">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase mb-4">{t.contact.title}</h2>
+            <p className="text-white/20 font-bold uppercase tracking-[0.4em] text-[10px]">Digital Footprint</p>
           </div>
             
-          <div className="flex flex-col items-center gap-10">
-            <button 
-              onClick={() => handleWhatsApp()}
-              className="flex items-center gap-4 group bg-white/5 px-8 py-6 rounded-[2rem] border border-white/10 hover:border-primary/50 transition-all"
-            >
-              <div className="w-12 h-12 bg-primary text-black rounded-xl flex items-center justify-center group-hover:scale-110 transition-all">
-                <Phone className="w-5 h-5" />
-              </div>
-              <div className="text-left">
-                <p className="text-[9px] font-black text-white/30 uppercase tracking-widest mb-0.5">{t.contact.whatsapp}</p>
-                <p className="text-lg font-bold">{t.contact.phone}</p>
-              </div>
-            </button>
+          <div className="flex flex-wrap justify-center gap-8 md:gap-12 px-4">
+            <SocialCard 
+              icon={Instagram} 
+              name="Instagram" 
+              href="https://instagram.com/omeralhamd" 
+              brandColor="rgba(220,39,67,0.4)"
+              colorClass="text-white/40 group-hover:text-white" 
+              hoverBg="hover:bg-gradient-to-tr hover:from-[#f09433] hover:via-[#dc2743] hover:to-[#bc1888]"
+            />
+            <SocialCard 
+              icon={Linkedin} 
+              name="LinkedIn" 
+              href="https://linkedin.com/in/omar-alhamad-2aa47638b" 
+              brandColor="rgba(10,102,194,0.4)"
+              colorClass="text-white/40 group-hover:text-white" 
+              hoverBg="hover:bg-[#0A66C2]"
+            />
+            <SocialCard 
+              icon={MessageCircle} 
+              name="WhatsApp" 
+              href={`https://wa.me/905546700650`} 
+              brandColor="rgba(37,211,102,0.4)"
+              colorClass="text-white/40 group-hover:text-white" 
+              hoverBg="hover:bg-[#25D366]"
+            />
+            <SocialCard 
+              icon={X} 
+              name="X (Twitter)" 
+              href="https://twitter.com" 
+              brandColor="rgba(255,255,255,0.2)"
+              colorClass="text-white/40 group-hover:text-black" 
+              hoverBg="hover:bg-white"
+            />
+          </div>
 
-            <div className="flex justify-center gap-4">
-              <a href="https://instagram.com/omeralhamd" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-white/30 hover:text-primary hover:bg-white/10 transition-all border border-white/5">
-                <Instagram className="w-6 h-6" />
-              </a>
-              <a href="https://linkedin.com/in/omar-alhamad-2aa47638b" target="_blank" rel="noreferrer" className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center text-white/30 hover:text-primary hover:bg-white/10 transition-all border border-white/5">
-                <Linkedin className="w-6 h-6" />
-              </a>
-            </div>
+          <div className="mt-20 text-center">
+             <motion.a 
+                href={`tel:${t.contact.phone}`}
+                className="inline-flex items-center gap-3 text-white/30 hover:text-primary transition-all font-black uppercase text-[10px] tracking-[0.5em]"
+                whileHover={{ x: 5 }}
+             >
+                <Phone className="w-3 h-3" />
+                {t.contact.phone}
+             </motion.a>
           </div>
         </section>
 
